@@ -1,0 +1,49 @@
+{
+    "name": "spacecatninja/imager-x-cloudflare-images-transformer", 
+    "description": "Cloudflare Images transformer for Imager X",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "license": "MIT",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "image",
+        "responsive",
+        "transform",
+        "srcset",
+        "picture",
+        "cloudflare",
+        "images"
+    ],
+    "support": {
+        "docs": "https://github.com/spacecatninja/craft-imager-x-cloudflare-images-transformer/blob/master/README.md",
+        "issues": "https://github.com/spacecatninja/craft-imager-x-cloudflare-images-transformer/issues"
+    },
+    "authors": [
+        {
+            "name": "SPACECATNINJA",
+            "homepage": "https://www.spacecat.ninja"
+        }
+    ],
+    "require": {
+        "php": "^8.2",        
+        "craftcms/cms": "^5.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "spacecatninja\\cloudflareimagestransformer\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Imager X Cloudflare Images Transformer",
+        "handle": "imager-x-cloudflare-images-transformer",
+        "schemaVersion": "1.0.0",
+        "hasCpSettings": false,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/spacecatninja/craft-imager-x-cloudflare-images-transformer/master/CHANGELOG.md",
+        "components": {},
+        "class": "spacecatninja\\cloudflareimagestransformer\\CloudflareImagesTransformer"
+    }
+}
