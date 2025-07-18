@@ -19,6 +19,9 @@ By default, this enables you to transform any image stored inside this domain. I
 like a staging domain, a tunnel-domain to you local server, some third-party service (thumbs from YouTube, Vimeo, etc), or something else, 
 you need to add these domains to the list of "Sources" in the details for the domain (click the domain in the list in "Transformations").
 
+You can also allow transformations from "Any origin", but this is not recommended as you'd be running an Image transform service
+that anyone on the internet could use to transform their own images with. 
+
 ## Usage
 
 Install and configure this transformer as described below. Then, in your [Imager X config](https://imager-x.spacecat.ninja/configuration.html), 
@@ -48,7 +51,7 @@ Cloudflare Images API is quite limited, but supports the most common use-cases. 
 [Cloudflare Images documentation](https://developers.cloudflare.com/images/transform-images/transform-via-url/) for
 a complete list of what's supported.
 
-Crop modes, width, height, ratio, quality and format, is automatically converted from the standard Imager parameters, 
+Crop modes, width, height, ratio, quality and format, are automatically converted from the standard Imager parameters, 
 while the rest of the additional options can be passed directly to Cloudflare using the `transformerParams` transform parameter. Example:
 
 ```
@@ -104,8 +107,8 @@ Default params to be passed to every transform. This is very handy for a couple 
  ]
 ```
 
-_At least `'format' => 'auto'` should be the default in most cases. Then Cloudflare will determine what image formats the browser supports, and deliver the best
-one._ 
+_`'format' => 'auto'` should be the default in most cases. Cloudflare will then determine what modern image formats the browser supports 
+(ie, webp or avif), and deliver the best one._ 
 
 It's also tempting to set `'gravity' => 'auto'` here, but see below.
 
