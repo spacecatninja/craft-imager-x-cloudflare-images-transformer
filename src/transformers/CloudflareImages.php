@@ -48,6 +48,7 @@ class CloudflareImages extends Component implements TransformerInterface
         'saturation',
         'sharpen',
         'slow-connection-quality',
+        'zoom',
     ];
     
     /**
