@@ -53,19 +53,30 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
         } else if (isset($transform['width']) || isset($transform['height'])) {
             if ($source !== null && $transform !== null) {
                 [$sourceWidth, $sourceHeight] = $this->getSourceImageDimensions($source);
-                [$w, $h] = $this->calculateTargetSize($transform, $sourceWidth ?? 1, $sourceHeight ?? 1);
 
-                $this->width = $w;
-                $this->height = $h;
+                if ((int)$sourceWidth === 0 || (int)$sourceHeight === 0) {
+                    if (isset($params['w'])) {
+                        $this->width = (int)$params['w'];
+                    }
+
+                    if (isset($params['h'])) {
+                        $this->height = (int)$params['h'];
+                    }
+                } else {
+                    [$w, $h] = $this->calculateTargetSize($transform, $sourceWidth ?? 1, $sourceHeight ?? 1);
+
+                    $this->width = $w;
+                    $this->height = $h;
+                }
             }
         } else {
             // Neither is set, image is not resized. Just get dimensions and return.
             [$sourceWidth, $sourceHeight] = $this->getSourceImageDimensions($source);
-    
+
             $this->width = $sourceWidth;
             $this->height = $sourceHeight;
         }
-        
+
         // Check if dpr is set and adjust size accordingly
         if (isset($transform['transformerParams']['dpr'])) {
             $this->width = round($this->width * $transform['transformerParams']['dpr']);
@@ -93,7 +104,7 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
             $imageWidth = $source->width;
             $imageHeight = $source->height;
         }
-        
+
         return [$imageWidth, $imageHeight];
     }
 
