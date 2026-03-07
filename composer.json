@@ -2,7 +2,7 @@
     "name": "spacecatninja/imager-x-cloudflare-images-transformer", 
     "description": "Cloudflare Images transformer for Imager X",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "MIT",
     "keywords": [
         "craft",
