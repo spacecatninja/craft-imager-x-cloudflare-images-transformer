@@ -57,6 +57,13 @@ return [
 
 Config files are loaded before Laravel knows the environment, so use `env()` for per-environment values, not `app()->environment()`. For example: `'zoneDomain' => env('APP_ENV') === 'production' ? 'example.com' : 'staging.example.com'`.
 
+### Crop and stretch modes
+
+Two modes now use different Cloudflare `fit` values, so their URLs change, and Cloudflare transforms the images again:
+
+- Mode `crop` (the default) uses `fit=crop` when `allowUpscale` is off, instead of `fit=cover`. Cloudflare's `crop` fills the area like `cover`, but never enlarges the image, so an image smaller than the requested size comes out smaller, and the transformed image's width and height say so. With `allowUpscale` on (Imager X's default), crops still use `fit=cover`.
+- Mode `stretch` uses `fit=squeeze`, which stretches the image to the exact size, like the `craft` transformer does. It used `fit=cover`, which cropped the image instead.
+
 ### Namespace and classes
 
 The plugin moved from `spacecatninja\cloudflareimagestransformer` to the `SpaceCatNinja\CloudflareImagesTransformer` namespace, with Laravel-style folders.
@@ -103,4 +110,6 @@ After:
 $quality = CloudflareImagesHelpers::getQualityFromExtension(CloudflareImagesHelpers::getExtension($image), $transform);
 ```
 
-`CloudflareImagesHelpers::getFitValue()` and `CloudflareImagesHelpers::prepFormat()` take the transform as an optional second argument, and read `allowUpscale` and `interlace` from it before the config.
+`CloudflareImagesHelpers::getFitValue()` and `CloudflareImagesHelpers::prepFormat()` take the transform as an optional second argument, and read `allowUpscale` and `interlace` from it before the config. `getFitValue()` returns `squeeze` for mode `stretch`, and `crop` for mode `crop` when `allowUpscale` is off.
+
+The `CloudflareImagesTransformedImageModel` constructor takes the Cloudflare `fit` value as an optional fourth argument, to calculate the size of crops that aren't enlarged.

@@ -19,8 +19,9 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
      * @param string|null       $imageUrl
      * @param Asset|string|null $source
      * @param array             $transform
+     * @param string|null       $fit       The Cloudflare fit value the image is transformed with
      */
-    public function __construct(?string $imageUrl = null, Asset|string|null $source = null, array $transform = [])
+    public function __construct(?string $imageUrl = null, Asset|string|null $source = null, array $transform = [], ?string $fit = null)
     {
         $this->source = $source;
 
@@ -51,6 +52,14 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
                         $this->height = $useH;
                     }
                 }
+            } elseif ($source !== null && $fit === 'crop') {
+                // Cloudflare's crop fills the area like cover, but never enlarges the image
+                [$sourceWidth, $sourceHeight] = $this->getSourceImageDimensions($source);
+
+                if ($sourceWidth !== 0 && $sourceHeight !== 0) {
+                    $this->width = min($this->width, $sourceWidth);
+                    $this->height = min($this->height, $sourceHeight);
+                }
             }
         } else if (isset($transform['width']) || isset($transform['height'])) {
             if ($source !== null && $transform !== null) {
@@ -66,6 +75,11 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
                     }
                 } else {
                     [$w, $h] = $this->calculateTargetSize($transform, $sourceWidth ?? 1, $sourceHeight ?? 1);
+
+                    // Cloudflare's crop never enlarges the image
+                    if ($fit === 'crop' && ($w > $sourceWidth || $h > $sourceHeight)) {
+                        [$w, $h] = [$sourceWidth, $sourceHeight];
+                    }
 
                     $this->width = $w;
                     $this->height = $h;

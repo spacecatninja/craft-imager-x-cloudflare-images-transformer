@@ -120,7 +120,7 @@ class CloudflareImages implements TransformerInterface
         // Create the final URL
         $url = CloudflareImagesHelpers::buildUrl($zoneUrl, $imagePath, $params);
         
-        return new CloudflareImagesTransformedImageModel($url, $image, $transform);
+        return new CloudflareImagesTransformedImageModel($url, $image, $transform, $params['fit']);
     }
     
     

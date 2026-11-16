@@ -140,7 +140,8 @@ class CloudflareImagesHelpers
     }
 
     /**
-     * Gets the fit value for Cloudflare Images, based on the Imager X transform mode.
+     * Gets the fit value for Cloudflare Images, based on the Imager X transform mode. Crops only enlarge the image
+     * when `allowUpscale` is on, and `stretch` distorts the image to the exact size, like the `craft` transformer.
      *
      * @param string     $mode
      * @param array|null $transform
@@ -156,11 +157,13 @@ class CloudflareImagesHelpers
             $mode = 'crop';
         }
 
+        $allowUpscale = $config->getSetting('allowUpscale', $transform);
+
         return match ($mode) {
-            'fit' => $config->getSetting('allowUpscale', $transform) ? 'contain' : 'scale-down',
-            'stretch', 'crop' => 'cover',
+            'fit' => $allowUpscale ? 'contain' : 'scale-down',
+            'stretch' => 'squeeze',
             'letterbox' => 'pad',
-            default => 'crop',
+            default => $allowUpscale ? 'cover' : 'crop',
         };
     }
 

@@ -54,7 +54,9 @@ Cloudflare Images API is quite limited, but supports the most common use-cases. 
 a complete list of what's supported.
 
 Crop modes, width, height, ratio, quality and format, are automatically converted from the standard Imager parameters, 
-while the rest of the additional options can be passed directly to Cloudflare using the `transformerParams` transform parameter. Example:
+while the rest of the additional options can be passed directly to Cloudflare using the `transformerParams` transform parameter. 
+Mode `crop` uses Cloudflare's `cover` fit, or `crop` when `allowUpscale` is off, `fit` uses `contain`, or `scale-down` when 
+`allowUpscale` is off, `stretch` uses `squeeze`, and `letterbox` uses `pad`. Mode `croponly` isn't supported, and is done as `crop`. Example:
 
 ```
 {% set transforms = craft.imagerx.transformImage(asset, 
