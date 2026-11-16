@@ -6,10 +6,10 @@
  * @copyright Copyright (c) 2025 André Elvan
  */
 
-namespace spacecatninja\cloudflareimagestransformer\helpers;
+namespace SpaceCatNinja\CloudflareImagesTransformer\Support;
 
 use craft\elements\Asset;
-use spacecatninja\cloudflareimagestransformer\CloudflareImagesTransformer;
+use SpaceCatNinja\CloudflareImagesTransformer\CloudflareImagesTransformer;
 use spacecatninja\imagerx\models\ConfigModel;
 use spacecatninja\imagerx\services\ImagerService;
 use function SSNepenthe\ColorUtils\color;
@@ -101,7 +101,7 @@ class CloudflareImagesHelpers
      */
     public static function getGravityValue(Asset|string $image, array $params): string
     {
-        /** @var \spacecatninja\cloudflareimagestransformer\models\Settings $settings */
+        /** @var \SpaceCatNinja\CloudflareImagesTransformer\Settings $settings */
         $settings = CloudflareImagesTransformer::$plugin->getSettings();
         
         if (isset($params['position'])) {

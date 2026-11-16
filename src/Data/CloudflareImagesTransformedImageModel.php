@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2025 André Elvan
  */
 
-namespace spacecatninja\cloudflareimagestransformer\models;
+namespace SpaceCatNinja\CloudflareImagesTransformer\Data;
 
 use craft\elements\Asset;
 use craft\helpers\App;

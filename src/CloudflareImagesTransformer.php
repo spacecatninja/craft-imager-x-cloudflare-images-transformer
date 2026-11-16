@@ -6,13 +6,13 @@
  * @copyright Copyright (c) 2025 André Elvan
  */
 
-namespace spacecatninja\cloudflareimagestransformer;
+namespace SpaceCatNinja\CloudflareImagesTransformer;
 
 use craft\base\Model;
 use craft\base\Plugin;
 
-use spacecatninja\cloudflareimagestransformer\models\Settings;
-use spacecatninja\cloudflareimagestransformer\transformers\CloudflareImages;
+use SpaceCatNinja\CloudflareImagesTransformer\Settings;
+use SpaceCatNinja\CloudflareImagesTransformer\Transformers\CloudflareImages;
 
 use yii\base\Event;
 

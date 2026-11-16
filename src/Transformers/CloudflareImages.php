@@ -6,15 +6,15 @@
  * @copyright Copyright (c) 2025 André Elvan
  */
 
-namespace spacecatninja\cloudflareimagestransformer\transformers;
+namespace SpaceCatNinja\CloudflareImagesTransformer\Transformers;
 
 use craft\base\Component;
 use craft\elements\Asset;
 
-use spacecatninja\cloudflareimagestransformer\CloudflareImagesTransformer;
-use spacecatninja\cloudflareimagestransformer\helpers\CloudflareImagesHelpers;
-use spacecatninja\cloudflareimagestransformer\models\CloudflareImagesTransformedImageModel;
-use spacecatninja\cloudflareimagestransformer\models\Settings;
+use SpaceCatNinja\CloudflareImagesTransformer\CloudflareImagesTransformer;
+use SpaceCatNinja\CloudflareImagesTransformer\Support\CloudflareImagesHelpers;
+use SpaceCatNinja\CloudflareImagesTransformer\Data\CloudflareImagesTransformedImageModel;
+use SpaceCatNinja\CloudflareImagesTransformer\Settings;
 use spacecatninja\imagerx\services\ImagerService;
 use spacecatninja\imagerx\transformers\TransformerInterface;
 use spacecatninja\imagerx\exceptions\ImagerException;
