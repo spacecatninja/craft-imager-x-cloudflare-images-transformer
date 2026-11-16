@@ -55,12 +55,12 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
                 [$sourceWidth, $sourceHeight] = $this->getSourceImageDimensions($source);
 
                 if ((int)$sourceWidth === 0 || (int)$sourceHeight === 0) {
-                    if (isset($params['w'])) {
-                        $this->width = (int)$params['w'];
+                    if (isset($transform['width'])) {
+                        $this->width = (int)$transform['width'];
                     }
 
-                    if (isset($params['h'])) {
-                        $this->height = (int)$params['h'];
+                    if (isset($transform['height'])) {
+                        $this->height = (int)$transform['height'];
                     }
                 } else {
                     [$w, $h] = $this->calculateTargetSize($transform, $sourceWidth ?? 1, $sourceHeight ?? 1);
