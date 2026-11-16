@@ -3,23 +3,20 @@
  * Cloudflare Images transformer for Imager X
  *
  * @link      https://www.spacecat.ninja
- * @copyright Copyright (c) 2025 André Elvan
+ * @copyright Copyright (c) 2026 André Elvan
  */
 
 namespace SpaceCatNinja\CloudflareImagesTransformer\Transformers;
 
-use craft\base\Component;
-use craft\elements\Asset;
-
-use SpaceCatNinja\CloudflareImagesTransformer\CloudflareImagesTransformer;
-use SpaceCatNinja\CloudflareImagesTransformer\Support\CloudflareImagesHelpers;
+use CraftCms\Cms\Asset\Elements\Asset;
 use SpaceCatNinja\CloudflareImagesTransformer\Data\CloudflareImagesTransformedImageModel;
 use SpaceCatNinja\CloudflareImagesTransformer\Settings;
-use spacecatninja\imagerx\services\ImagerService;
-use spacecatninja\imagerx\transformers\TransformerInterface;
-use spacecatninja\imagerx\exceptions\ImagerException;
+use SpaceCatNinja\CloudflareImagesTransformer\Support\CloudflareImagesHelpers;
+use SpaceCatNinja\ImagerX\Exceptions\ImagerException;
+use SpaceCatNinja\ImagerX\Services\ImagerService;
+use SpaceCatNinja\ImagerX\Transformers\TransformerInterface;
 
-class CloudflareImages extends Component implements TransformerInterface
+class CloudflareImages implements TransformerInterface
 {
 
     /**
@@ -57,7 +54,7 @@ class CloudflareImages extends Component implements TransformerInterface
      *
      * @return array|null
      *
-     * @throws ImagerException|\yii\base\InvalidConfigException
+     * @throws ImagerException
      */
     public function transform(Asset|string $image, array $transforms): ?array
     {
@@ -75,12 +72,11 @@ class CloudflareImages extends Component implements TransformerInterface
      * @param array $transform
      *
      * @return CloudflareImagesTransformedImageModel
-     * @throws ImagerException|\yii\base\InvalidConfigException
+     * @throws ImagerException
      */
     private function getTransformedImage(Asset|string $image, array $transform): CloudflareImagesTransformedImageModel
     {
-        /** @var Settings $settings */
-        $settings = CloudflareImagesTransformer::$plugin->getSettings();
+        $settings = app(Settings::class);
         $config = ImagerService::getConfig();
         $transformerParams = $transform['transformerParams'] ?? [];
         

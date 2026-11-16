@@ -28,8 +28,9 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "craftcms/cms": "^5.0.0"
+        "php": "^8.5",
+        "craftcms/cms": "^6.0.0-alpha",
+        "spacecatninja/imager-x": "^7.0.0-beta.2"
     },
     "autoload": {
         "psr-4": {
@@ -41,9 +42,7 @@
         "handle": "imager-x-cloudflare-images-transformer",
         "schemaVersion": "1.0.0",
         "hasCpSettings": false,
-        "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/spacecatninja/craft-imager-x-cloudflare-images-transformer/master/CHANGELOG.md",
-        "components": {},
         "class": "SpaceCatNinja\\CloudflareImagesTransformer\\CloudflareImagesTransformer"
     }
 }

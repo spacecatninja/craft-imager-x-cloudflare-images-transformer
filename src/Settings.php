@@ -3,14 +3,14 @@
  * Cloudflare Images transformer for Imager X
  *
  * @link      https://www.spacecat.ninja
- * @copyright Copyright (c) 2025 André Elvan
+ * @copyright Copyright (c) 2026 André Elvan
  */
 
 namespace SpaceCatNinja\CloudflareImagesTransformer;
 
-use craft\base\Model;
+use CraftCms\Cms\Plugin\PluginSettings;
 
-class Settings extends Model
+class Settings extends PluginSettings
 {
     public string $zoneDomain = '';
     public bool $autoGravityWhenNoFocalPoint = false;

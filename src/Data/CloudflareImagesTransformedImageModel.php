@@ -3,25 +3,27 @@
  * Cloudflare Images transformer for Imager X
  *
  * @link      https://www.spacecat.ninja
- * @copyright Copyright (c) 2025 André Elvan
+ * @copyright Copyright (c) 2026 André Elvan
  */
 
 namespace SpaceCatNinja\CloudflareImagesTransformer\Data;
 
-use craft\elements\Asset;
-use craft\helpers\App;
-use spacecatninja\imagerx\models\BaseTransformedImageModel;
-use spacecatninja\imagerx\models\TransformedImageInterface;
+use CraftCms\Cms\Asset\Elements\Asset;
+use CraftCms\Cms\Support\Env;
+use SpaceCatNinja\ImagerX\Data\BaseTransformedImageModel;
+use SpaceCatNinja\ImagerX\Data\TransformedImageInterface;
 
 class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel implements TransformedImageInterface
 {
     /**
-     * @param string|null $imageUrl
-     * @param Asset|string|null  $source
-     * @param array       $transform
+     * @param string|null       $imageUrl
+     * @param Asset|string|null $source
+     * @param array             $transform
      */
-    public function __construct(string $imageUrl = null, Asset|string $source = null, array $transform = [])
+    public function __construct(?string $imageUrl = null, Asset|string|null $source = null, array $transform = [])
     {
+        $this->source = $source;
+
         if ($imageUrl !== null) {
             $this->url = $imageUrl;
         }
@@ -95,14 +97,14 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
         $imageHeight = 0;
 
         if (is_string($source)) {
-            $imageInfo = @getimagesize(App::parseEnv('@webroot/'.ltrim($source, '/')));
+            $imageInfo = @getimagesize(Env::parse('@webroot/'.ltrim($source, '/')));
 
             if (\is_array($imageInfo) && $imageInfo[0] !== '' && $imageInfo[1] !== '') {
                 [$imageWidth, $imageHeight] = $imageInfo;
             }
         } else {
-            $imageWidth = $source->width;
-            $imageHeight = $source->height;
+            $imageWidth = (int)$source->getWidth();
+            $imageHeight = (int)$source->getHeight();
         }
 
         return [$imageWidth, $imageHeight];

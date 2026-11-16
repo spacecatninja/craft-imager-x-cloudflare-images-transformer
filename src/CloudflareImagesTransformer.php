@@ -3,50 +3,39 @@
  * Cloudflare Images transformer for Imager X
  *
  * @link      https://www.spacecat.ninja
- * @copyright Copyright (c) 2025 André Elvan
+ * @copyright Copyright (c) 2026 André Elvan
  */
 
 namespace SpaceCatNinja\CloudflareImagesTransformer;
 
-use craft\base\Model;
-use craft\base\Plugin;
-
-use SpaceCatNinja\CloudflareImagesTransformer\Settings;
+use CraftCms\Cms\Plugin\Plugin;
+use CraftCms\Cms\Plugin\PluginSettings;
 use SpaceCatNinja\CloudflareImagesTransformer\Transformers\CloudflareImages;
-
-use yii\base\Event;
+use SpaceCatNinja\ImagerX\Transformers\Transformers;
 
 class CloudflareImagesTransformer extends Plugin
 {
-    // Static Properties
-    // =========================================================================
-
-    public static CloudflareImagesTransformer $plugin;
-
     // Public Methods
     // =========================================================================
 
-    public function init(): void
+    public function register(): void
     {
-        parent::init();
+        parent::register();
 
-        self::$plugin = $this;
-        
-        // Register transformer with Imager
-        Event::on(\spacecatninja\imagerx\ImagerX::class,
-            \spacecatninja\imagerx\ImagerX::EVENT_REGISTER_TRANSFORMERS,
-            static function (\spacecatninja\imagerx\events\RegisterTransformersEvent $event) {
-                $event->transformers['cloudflareimages'] = CloudflareImages::class;
-            }
-        );
+        $this->app->singleton(Settings::class, fn() => $this->getSettings());
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel(): ?Model
+    public function boot(Transformers $transformers): void
+    {
+        // Register transformer with Imager X
+        $transformers->register('cloudflareimages', CloudflareImages::class);
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    protected static function createSettings(): ?PluginSettings
     {
         return new Settings();
     }
-
 }

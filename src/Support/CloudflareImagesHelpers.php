@@ -3,15 +3,15 @@
  * Cloudflare Images transformer for Imager X
  *
  * @link      https://www.spacecat.ninja
- * @copyright Copyright (c) 2025 André Elvan
+ * @copyright Copyright (c) 2026 André Elvan
  */
 
 namespace SpaceCatNinja\CloudflareImagesTransformer\Support;
 
-use craft\elements\Asset;
-use SpaceCatNinja\CloudflareImagesTransformer\CloudflareImagesTransformer;
-use spacecatninja\imagerx\models\ConfigModel;
-use spacecatninja\imagerx\services\ImagerService;
+use CraftCms\Cms\Asset\Elements\Asset;
+use Illuminate\Support\Facades\Log;
+use SpaceCatNinja\CloudflareImagesTransformer\Settings;
+use SpaceCatNinja\ImagerX\Services\ImagerService;
 use function SSNepenthe\ColorUtils\color;
 use function SSNepenthe\ColorUtils\red;
 use function SSNepenthe\ColorUtils\blue;
@@ -24,11 +24,10 @@ class CloudflareImagesHelpers
     /**
      * Generates the image path based on the provided image URL and domain configuration.
      *
-     * @param \craft\elements\Asset|string $image      The image asset or image URL as a string.
-     * @param string                       $zoneDomain The domain to be used for URL validation and modification.
+     * @param Asset|string $image      The image asset or image URL as a string.
+     * @param string       $zoneDomain The domain to be used for URL validation and modification.
      *
      * @return string The resulting image path after processing.
-     * @throws \yii\base\InvalidConfigException
      */
     public static function getImagePath(Asset|string $image, string $zoneDomain): string
     {
@@ -59,14 +58,13 @@ class CloudflareImagesHelpers
     /**
      * Gets the quality setting based on the extension.
      *
-     * @param \craft\elements\Asset|string $image
-     * @param array|null                   $transform
+     * @param Asset|string $image
+     * @param array|null   $transform
      *
-     * @return string
+     * @return int
      */
-    public static function getQualityFromExtension(Asset|string $image, array $transform = null): string
+    public static function getQualityFromExtension(Asset|string $image, ?array $transform = null): int
     {
-        /** @var ConfigModel $settings */
         $config = ImagerService::getConfig();
 
         if (is_string($image)) {
@@ -94,16 +92,15 @@ class CloudflareImagesHelpers
     /**
      * Determines the gravity value based on the image and provided parameters.
      *
-     * @param \craft\elements\Asset|string $image  The image asset or file path.
-     * @param array                        $params An array of parameters, including position.
+     * @param Asset|string $image  The image asset or file path.
+     * @param array        $params An array of parameters, including position.
      *
      * @return string The calculated gravity value in the format "x,y" or "auto".
      */
     public static function getGravityValue(Asset|string $image, array $params): string
     {
-        /** @var \SpaceCatNinja\CloudflareImagesTransformer\Settings $settings */
-        $settings = CloudflareImagesTransformer::$plugin->getSettings();
-        
+        $settings = app(Settings::class);
+
         if (isset($params['position'])) {
             $focalPoint = explode(' ', $params['position']);
             $left = (float)($focalPoint[0] ?? 50);
@@ -118,7 +115,7 @@ class CloudflareImagesHelpers
             $left = (float)($focalPoint[0] ?? 50);
             $top = (float)($focalPoint[1] ?? 50);
         } else {
-            if (!$image->hasFocalPoint && $settings->autoGravityWhenNoFocalPoint) {
+            if (!$image->getHasFocalPoint() && $settings->autoGravityWhenNoFocalPoint) {
                 return 'auto';
             }
             
@@ -144,7 +141,7 @@ class CloudflareImagesHelpers
         $config = ImagerService::getConfig();
 
         if ($mode === 'croponly') {
-            \Craft::error('The Cloudflare Images Transformer does not support mode `croponly`, reverting to `crop`.', __METHOD__);
+            Log::warning('The Cloudflare Images transformer does not support mode `croponly`, reverting to `crop`.');
             $mode = 'crop';
         }
 
