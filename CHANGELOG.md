@@ -1,5 +1,30 @@
 # Cloudflare Images transformer for Imager X Changelog
 
+## 2.0.0 - Unreleased
+
+> [!IMPORTANT]
+> Version 2 requires Craft CMS 6, Imager X 7 and PHP 8.5, the config file moves to `config/craft/`, and there are breaking changes for code that uses the plugin's classes. See [UPGRADE.md](UPGRADE.md).
+
+### Added
+- Added `CloudflareImagesHelpers::getExtension()`.
+
+### Changed
+- The plugin now requires Craft CMS 6, Imager X 7.0.0-beta.2 or later, and PHP 8.5, and uses Craft 6's native plugin APIs. It doesn't need the Yii 2 adapter.
+- The config file is now `config/craft/imager-x-cloudflare-images-transformer.php`, and is a plain Laravel config file.
+- Classes moved to the `SpaceCatNinja\CloudflareImagesTransformer` namespace, and to Laravel-style folders.
+- The transformer is now registered with Imager X's `Transformers` registry.
+- `CloudflareImagesHelpers::getQualityFromExtension()` now takes a file extension or format instead of an image, and returns an integer.
+- `CloudflareImagesHelpers::getFitValue()` and `CloudflareImagesHelpers::prepFormat()` now take the transform, to read its settings.
+
+### Removed
+- Removed the `CloudflareImagesTransformer::$plugin` property.
+
+### Fixed
+- Fixed `webpQuality`, `avifQuality` and `jxlQuality` being ignored when a transform set `format`. The quality came from `jpegQuality`.
+- Fixed `allowUpscale` and `interlace` being ignored when they were set in a transform instead of in the config.
+- Fixed a `background` in `transformerParams` being replaced by the letterbox color when using mode `letterbox`.
+- Fixed the README example for combining a local transform with Cloudflare.
+
 ## 1.0.2 - 2026-08-28
 
 ### Fixed

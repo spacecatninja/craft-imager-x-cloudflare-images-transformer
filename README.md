@@ -7,8 +7,10 @@ _Please note, this plugin does not enable you to store images on Cloudflare, it 
 
 ## Requirements
 
-This plugin requires Craft CMS 5.0.0 or later, [Imager X 5.0.0](https://github.com/spacecatninja/craft-imager-x/) or later,
-and an account with [Cloudflare](https://cloudflare.com/).
+This plugin requires Craft CMS 6.0.0 or later, [Imager X 7.0.0](https://github.com/spacecatninja/craft-imager-x/) or later
+(the Pro edition, like all custom transformers), PHP 8.5 or later, and an account with [Cloudflare](https://cloudflare.com/).
+
+Version 1.x of this plugin supports Craft CMS 5 and Imager X 5 and 6. See [UPGRADE.md](UPGRADE.md) when moving to Craft 6.
 
 ## Setting up Cloudflare Images
 
@@ -25,7 +27,7 @@ that anyone on the internet could use to transform their own images with.
 ## Usage
 
 Install and configure this transformer as described below. Then, in your [Imager X config](https://imager-x.spacecat.ninja/configuration.html), 
-set the transformer to `cloudflareimages`, ie:
+`config/craft/imager-x.php`, set the transformer to `cloudflareimages`, ie:
 
 ```
 'transformer' => 'cloudflareimages',
@@ -71,8 +73,8 @@ something is stored, you can do one transform with the local `craft` transformer
 can be useful if you want to use some functionality that is not supported by Cloudflare, but is in Imager. Example:
 
 ```
-{% mySpecialTransform = craft.imagerx.transformImage({ effects: { modulate: [90,50,100] } }, {}, { transformer: 'craft' }) %}
-{% transforms = craft.imagerx.transformImage(mySpecialTransform, [600, 1800, 16/9]) %}
+{% set mySpecialTransform = craft.imagerx.transformImage(asset, { effects: { modulate: [90, 50, 100] } }, null, { transformer: 'craft' }) %}
+{% set transforms = craft.imagerx.transformImage(mySpecialTransform, [600, 1800, 16/9]) %}
 ```
 
 This of course requires that Cloudflare can access the image generated in the first step, so in this case, if you try it on a local dev
@@ -84,13 +86,26 @@ server, you need to figure out how to enable that.
 To install the plugin, follow these instructions:
 
 1. Install with composer via `composer require spacecatninja/imager-x-cloudflare-images-transformer` from your project directory.
-2. Install the plugin in the Craft Control Panel under Settings > Plugins, or from the command line via `craft plugin/install imager-x-cloudflare-images-transformer`.
+2. Install the plugin in the Craft Control Panel under Settings > Plugins, or from the command line via `php artisan craft:plugin:install imager-x-cloudflare-images-transformer`.
 
 
 ## Configuration
 
-You can configure the transformer by creating a file in your config folder called
-`imager-x-cloudflare-images-transformer.php`, and override settings as needed.
+You can configure the transformer by creating a file called `imager-x-cloudflare-images-transformer.php` in your 
+`config/craft/` folder, and override settings as needed. It's a plain Laravel config file, so use `env()` for 
+environment-specific values.
+
+```php
+<?php
+
+return [
+    'zoneDomain' => env('CLOUDFLARE_IMAGES_ZONE_DOMAIN', 'example.com'),
+    'autoGravityWhenNoFocalPoint' => true,
+    'defaultParams' => [
+        'format' => 'auto',
+    ],
+];
+```
 
 ### zoneDomain [string]
 Default: `''`  
