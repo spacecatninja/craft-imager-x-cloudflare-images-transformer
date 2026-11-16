@@ -112,4 +112,4 @@ $quality = CloudflareImagesHelpers::getQualityFromExtension(CloudflareImagesHelp
 
 `CloudflareImagesHelpers::getFitValue()` and `CloudflareImagesHelpers::prepFormat()` take the transform as an optional second argument, and read `allowUpscale` and `interlace` from it before the config. `getFitValue()` returns `squeeze` for mode `stretch`, and `crop` for mode `crop` when `allowUpscale` is off.
 
-The `CloudflareImagesTransformedImageModel` constructor takes the Cloudflare `fit` value as an optional fourth argument, to calculate the size of crops that aren't enlarged.
+The `CloudflareImagesTransformedImageModel` constructor takes the Cloudflare `fit` value as an optional fourth argument, to calculate whether the image is enlarged. Without it, the size is calculated as if the image is never enlarged in mode `fit`, like in version 1.

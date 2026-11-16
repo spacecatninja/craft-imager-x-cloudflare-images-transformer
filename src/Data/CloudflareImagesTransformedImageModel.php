@@ -19,7 +19,8 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
      * @param string|null       $imageUrl
      * @param Asset|string|null $source
      * @param array             $transform
-     * @param string|null       $fit       The Cloudflare fit value the image is transformed with
+     * @param string|null       $fit       The Cloudflare fit value the image is transformed with. Without it,
+     *                                     fit and crop sizes are calculated as if the image is never enlarged.
      */
     public function __construct(?string $imageUrl = null, Asset|string|null $source = null, array $transform = [], ?string $fit = null)
     {
@@ -41,13 +42,16 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
                 $transformW = (int)$transform['width'];
                 $transformH = (int)$transform['height'];
 
+                // Cloudflare's contain enlarges the image to fit the size, scale-down doesn't
+                $enlarge = $fit === 'contain';
+
                 if ($sourceWidth !== 0 && $sourceHeight !== 0) {
                     if ($sourceWidth / $sourceHeight > $transformW / $transformH) {
-                        $useW = min($transformW, $sourceWidth);
+                        $useW = $enlarge ? $transformW : min($transformW, $sourceWidth);
                         $this->width = $useW;
                         $this->height = round($useW * ($sourceHeight / $sourceWidth));
                     } else {
-                        $useH = min($transformH, $sourceHeight);
+                        $useH = $enlarge ? $transformH : min($transformH, $sourceHeight);
                         $this->width = round($useH * ($sourceWidth / $sourceHeight));
                         $this->height = $useH;
                     }
@@ -76,8 +80,8 @@ class CloudflareImagesTransformedImageModel extends BaseTransformedImageModel im
                 } else {
                     [$w, $h] = $this->calculateTargetSize($transform, $sourceWidth ?? 1, $sourceHeight ?? 1);
 
-                    // Cloudflare's crop never enlarges the image
-                    if ($fit === 'crop' && ($w > $sourceWidth || $h > $sourceHeight)) {
+                    // Cloudflare's crop and scale-down never enlarge the image
+                    if (in_array($fit, ['crop', 'scale-down'], true) && ($w > $sourceWidth || $h > $sourceHeight)) {
                         [$w, $h] = [$sourceWidth, $sourceHeight];
                     }
 

@@ -25,6 +25,7 @@
 - Fixed a `background` in `transformerParams` being replaced by the letterbox color when using mode `letterbox`.
 - Fixed mode `crop` enlarging images when `allowUpscale` was off. It now uses Cloudflare's `crop` fit instead of `cover` then, and the transformed image's size is no larger than the source.
 - Fixed mode `stretch` cropping the image. It now uses Cloudflare's `squeeze` fit, which stretches the image to the exact size, instead of `cover`.
+- Fixed the size of images transformed with mode `fit`. With `allowUpscale` on, Cloudflare enlarges them to fit the size, but the size was capped at the source size. With it off, a transform with only a `width` or `height` was reported larger than the source.
 - Fixed the README example for combining a local transform with Cloudflare.
 
 ## 1.0.2 - 2026-08-28
