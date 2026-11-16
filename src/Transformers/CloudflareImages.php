@@ -90,22 +90,18 @@ class CloudflareImages implements TransformerInterface
         // Merge all params
         $params = [...$settings->defaultParams, ...$transform, ...$transformerParams];
         
-        // Get quality
+        // Get quality, from the format the image is transformed to, or the image's own
         if (empty($params['quality'])) {
-            if (isset($params['format'])) {
-                $params['quality'] = CloudflareImagesHelpers::getQualityFromExtension($params['format'], $params);
-            } else {
-                $params['quality'] = CloudflareImagesHelpers::getQualityFromExtension($image, $params);
-            }
+            $params['quality'] = CloudflareImagesHelpers::getQualityFromExtension($params['format'] ?? CloudflareImagesHelpers::getExtension($image), $params);
         }
 
         // Get correct format
         if (!empty($params['format'])) {
-            $params['format'] = CloudflareImagesHelpers::prepFormat($params['format']);
+            $params['format'] = CloudflareImagesHelpers::prepFormat($params['format'], $params);
         }
         
         // Get correct fit from mode
-        $params['fit'] = CloudflareImagesHelpers::getFitValue($params['mode'] ?? 'crop');
+        $params['fit'] = CloudflareImagesHelpers::getFitValue($params['mode'] ?? 'crop', $params);
         
         // Add gravity if not set and fit is cover or crop
         if (isset($params['width'], $params['height']) && ($params['fit'] === 'cover' || $params['fit'] === 'crop') && !isset($params['gravity'])) {
@@ -113,7 +109,7 @@ class CloudflareImages implements TransformerInterface
         }
         
         // Add letterbox color if not set and fit is pad
-        if ($params['fit'] === 'pad' && !isset($transform['background'])) {
+        if ($params['fit'] === 'pad' && !isset($transform['background']) && !isset($transformerParams['background'])) {
             $letterboxDef = $config->getSetting('letterbox', $transform);
             $params['background'] = CloudflareImagesHelpers::getLetterboxColor($letterboxDef);
         }

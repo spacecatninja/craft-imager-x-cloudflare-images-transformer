@@ -56,24 +56,34 @@ class CloudflareImagesHelpers
     }
 
     /**
-     * Gets the quality setting based on the extension.
+     * Gets the file extension of an image, in lowercase.
      *
-     * @param Asset|string $image
-     * @param array|null   $transform
+     * @param Asset|string $image The image asset or image URL as a string.
+     *
+     * @return string
+     */
+    public static function getExtension(Asset|string $image): string
+    {
+        if (is_string($image)) {
+            return strtolower(pathinfo((string)parse_url($image, PHP_URL_PATH), PATHINFO_EXTENSION));
+        }
+
+        return strtolower($image->getExtension());
+    }
+
+    /**
+     * Gets the quality setting based on the extension, or the format the image is transformed to.
+     *
+     * @param string     $ext
+     * @param array|null $transform
      *
      * @return int
      */
-    public static function getQualityFromExtension(Asset|string $image, ?array $transform = null): int
+    public static function getQualityFromExtension(string $ext, ?array $transform = null): int
     {
         $config = ImagerService::getConfig();
 
-        if (is_string($image)) {
-            $ext = pathinfo($image, PATHINFO_EXTENSION);
-        } else {
-            $ext = $image->getExtension();
-        }
-
-        switch ($ext) {
+        switch (strtolower($ext)) {
             case 'png':
                 $pngCompression = $config->getSetting('pngCompressionLevel', $transform);
 
@@ -132,11 +142,12 @@ class CloudflareImagesHelpers
     /**
      * Gets the fit value for Cloudflare Images, based on the Imager X transform mode.
      *
-     * @param string $mode
+     * @param string     $mode
+     * @param array|null $transform
      *
      * @return string
-     */   
-    public static function getFitValue(string $mode): string
+     */
+    public static function getFitValue(string $mode, ?array $transform = null): string
     {
         $config = ImagerService::getConfig();
 
@@ -146,7 +157,7 @@ class CloudflareImagesHelpers
         }
 
         return match ($mode) {
-            'fit' => $config->allowUpscale ? 'contain' : 'scale-down',
+            'fit' => $config->getSetting('allowUpscale', $transform) ? 'contain' : 'scale-down',
             'stretch', 'crop' => 'cover',
             'letterbox' => 'pad',
             default => 'crop',
@@ -199,11 +210,12 @@ class CloudflareImagesHelpers
      * Prepares the format for Cloudflare Images.
      * jpg should be jpeg, and if interlace is disabled, we need to set the baseline-jpeg format.
      * 
-     * @param $format
+     * @param string     $format
+     * @param array|null $transform
      *
      * @return string
      */
-    public static function prepFormat($format): string
+    public static function prepFormat(string $format, ?array $transform = null): string
     {
         $config = ImagerService::getConfig();
         
@@ -211,7 +223,7 @@ class CloudflareImagesHelpers
             $format = 'jpeg';
         }
         
-        if ($format === 'jpeg' && !$config->interlace) {
+        if ($format === 'jpeg' && !$config->getSetting('interlace', $transform)) {
             return 'baseline-jpeg';
         }
         
